@@ -1,0 +1,49 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <StartupObject>Veyrin.Demo.LogDemo.Program</StartupObject>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="CFG\**" />
+    <Compile Remove="Scribe\**" />
+    <EmbeddedResource Remove="CFG\**" />
+    <EmbeddedResource Remove="Scribe\**" />
+    <None Remove="CFG\**" />
+    <None Remove="Scribe\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="LogDemo.md" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="CFG\CfgDemo.cs" />
+    <Compile Include="Scribe\ClosedXml\Program.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="NLog" Version="6.0.7" />
+    <PackageReference Include="NLog.Extensions.Logging" Version="6.1.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Veyrin.Cli\Veyrin.Cli.csproj" />
+    <ProjectReference Include="..\..\src\Veyrin.Config\Veyrin.Config.csproj" />
+    <ProjectReference Include="..\..\src\Veyrin.Data\Veyrin.Data.csproj" />
+    <ProjectReference Include="..\..\src\Veyrin.DevKit\Veyrin.DevKit.csproj" />
+    <ProjectReference Include="..\..\src\Veyrin.Pulse\Veyrin.Pulse.csproj" />
+    <ProjectReference Include="..\..\src\Veyrin.Scribe\Excel.ClosedXML\Veyrin.Scribe.Excel.ClosedXML.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="nlog.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+</Project>
