@@ -1,0 +1,157 @@
+﻿using System.Diagnostics;
+using System.Text.RegularExpressions;
+
+namespace UniversalVideoDownloader;
+
+public class VideoDownloader
+{
+    private readonly string _outputFolder;
+    private readonly YoutubeClient _youtube;
+
+    public VideoDownloader(string? outputFolder = null)
+    {
+        _outputFolder = outputFolder ?? Path.Combine(Environment.CurrentDirectory, "Downloads");
+        Directory.CreateDirectory(_outputFolder);
+        _youtube = new YoutubeClient();
+    }
+
+    /// <summary>
+    /// 同時下載多個影片
+    /// </summary>
+    public async Task DownloadAsync(IEnumerable<string> urls)
+    {
+        var tasks = urls.Select(url => ProcessUrlAsync(url.Trim())).ToList();
+        await Task.WhenAll(tasks);
+        Console.WriteLine("✅ 所有影片下載完成！");
+    }
+
+    /// <summary>
+    /// 處理單一影片下載邏輯
+    /// </summary>
+    private async Task ProcessUrlAsync(string url)
+    {
+        if (string.IsNullOrWhiteSpace(url)) return;
+
+        try
+        {
+            if (url.Contains("youtube.com") || url.Contains("youtu.be"))
+            {
+                await DownloadYouTubeAsync(url);
+            }
+            else if (url.EndsWith(".m3u8") || url.Contains(".m3u8"))
+            {
+                await DownloadM3U8Async(url);
+            }
+            else
+            {
+                string? m3u8 = await TryExtractM3U8Async(url);
+                if (m3u8 != null)
+                    await DownloadM3U8Async(m3u8);
+                else
+                    Console.WriteLine($"⚠️ 無法從頁面解析 m3u8：{url}");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"❌ 下載失敗 [{url}]：{ex.Message}");
+        }
+    }
+
+    // -------------------------------
+    // YouTube 影片下載
+    // -------------------------------
+    private async Task DownloadYouTubeAsync(string url)
+    {
+        var video = await _youtube.Videos.GetAsync(url);
+        var manifest = await _youtube.Videos.Streams.GetManifestAsync(video.Id);
+        var streamInfo = manifest.GetMuxedStreams()
+            .OrderByDescending(s => s.VideoQuality.MaxHeight)
+            .FirstOrDefault();
+
+        if (streamInfo == null)
+        {
+            Console.WriteLine($"⚠️ 無法取得 YouTube 串流：{url}");
+            return;
+        }
+
+        string safeTitle = MakeSafeFilename(video.Title);
+        string outputPath = Path.Combine(_outputFolder, $"{safeTitle}.mp4");
+
+        Console.WriteLine($"▶️ 正在下載 YouTube：{video.Title}");
+        await _youtube.Videos.Streams.DownloadAsync(streamInfo, outputPath);
+        Console.WriteLine($"✅ 下載完成：{outputPath}");
+    }
+
+    // -------------------------------
+    // m3u8 串流下載
+    // -------------------------------
+    private async Task DownloadM3U8Async(string m3u8Url)
+    {
+        string fileName = "m3u8_" + DateTime.Now.ToString("yyyyMMdd_HHmmss") + ".mp4";
+        string outputPath = Path.Combine(_outputFolder, fileName);
+
+        Console.WriteLine($"🌐 下載 m3u8 串流：{m3u8Url}");
+        await RunFFmpegAsync($"-y -i \"{m3u8Url}\" -c copy \"{outputPath}\"");
+        Console.WriteLine($"✅ 下載完成：{outputPath}");
+    }
+
+    // -------------------------------
+    // 嘗試從一般頁面提取 m3u8
+    // -------------------------------
+    private async Task<string?> TryExtractM3U8Async(string pageUrl)
+    {
+        try
+        {
+            using var client = new HttpClient();
+            client.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0");
+            string html = await client.GetStringAsync(pageUrl);
+
+            var match = Regex.Match(html, @"https?:\/\/[^\s'""]+\.m3u8");
+            return match.Success ? match.Value : null;
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
+    // -------------------------------
+    // 呼叫 ffmpeg 執行下載
+    // -------------------------------
+    private async Task RunFFmpegAsync(string arguments)
+    {
+        var process = new Process
+        {
+            StartInfo = new ProcessStartInfo
+            {
+                FileName = "ffmpeg",
+                Arguments = arguments,
+                RedirectStandardError = true,
+                RedirectStandardOutput = true,
+                UseShellExecute = false,
+                CreateNoWindow = true
+            }
+        };
+
+        process.Start();
+
+        while (!process.StandardError.EndOfStream)
+        {
+            string? line = await process.StandardError.ReadLineAsync();
+            if (!string.IsNullOrEmpty(line) &&
+                (line.Contains("frame=") || line.Contains("Duration")))
+            {
+                Console.WriteLine(line);
+            }
+        }
+
+        await process.WaitForExitAsync();
+    }
+
+    private string MakeSafeFilename(string title)
+    {
+        foreach (char c in Path.GetInvalidFileNameChars())
+            title = title.Replace(c, '_');
+        return title;
+    }
+}

@@ -1,0 +1,97 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IHtmlLocalizer<newAPD.Infrastructure.Localize.Resource> sharedLocalizer;
+@{
+    string ModalId = "createModal";
+    string Title = $"{ViewData["Title"]}";
+}
+
+<div class="modal fade" id="@ModalId" tabindex="-1" aria-labelledby="baseModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl">
+        <div class="modal-content">
+@*             <div class="modal-header">
+                <h4 class="modal-title" id="base">@Title</h4>
+            </div> *@
+            <div id="base-modal-body" style="padding: 16px 20px 150px 20px;">
+
+                <div style="border: 1px solid var(--border); ">
+                    @{
+                        <form>
+                            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                            <div class="col-md-12">
+                                <div class="row fieldsArea">
+
+                                    <div class="col-md-3 search-bar-col">
+                                        <label class="form-label">@sharedLocalizer["Upload File(Only English Name File)"]</label>
+                                        <input id="upFiles" type="file" accept=".pdf" style="display: none;" onchange="doSelect();" />
+                                        <label type="button" for="upFiles" class="masterData-btn-upload-label">
+                                            <span id="fileNameText" class="masterData-btn-upload-textValue">Select file(*.pdf)</span>
+                                            <span class="masterData-btn-upload">Browse</span>
+                                        </label>
+                                    </div>
+
+                                    <div class="col-md-3 search-bar-col">
+                                        <label class="form-label">@sharedLocalizer["Report No."]</label>
+                                        <input type="text" class="from-control form-input" name="PROD_Group" id="txtReportNo"
+                                                value=""/>
+                                    </div>
+
+                                    <div class="col-md-3 search-bar-col">
+                                        <label class="form-label">@sharedLocalizer["Report Date"]</label>
+                                        <input type="text" class="from-control form-input" name="Planner" id="txtReportDate"
+                                                    value=""/>
+                                    </div>
+                                    <div class="col-md-3 search-bar-col">
+                                        <label class="form-label">@sharedLocalizer["Review Date"]</label>
+                                        <input type="text" class="from-control form-input" name="Mail" id="txtReviewDate"
+                                               value="" />
+                                    </div>
+
+
+                                </div>
+                            </div>
+
+                            <div class="col-md-12">
+                                <div class="row fieldsArea">
+                                    <div class="col-md-3 search-bar-col">
+                                        <input type="text" class="from-control form-input" name="Subcon" id="ddSubcon"
+                                               value="" />
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    }
+                </div>
+            </div>
+            <div class="modal-footer" style="justify-content: space-between;">
+                <div style="display:flex;flex-direction: column;gap:10px;">
+                    <div hidden id="errMessage" style="display:flex; gap:10px; align-items:center;">
+                        <span class="checkLight redLight" style="min-width: 20px;"></span>
+                        <p id="errText" class="errText" style="margin-bottom:0"></p>
+                    </div>
+                </div>
+                <div style="display:flex; flex-wrap:wrap; gap:6px; align-items:center;">
+                    <button id="@($"{ModalId}-btnLeft")" type="button" class="btn btn-gray"
+                        style="line-height:1.2; min-width:100px;" onclick="handleCancel()">Cancel</button>
+                    <button id="@($"{ModalId}-btnRight")" type="button" class="btn btn-primary"
+                        style="line-height:1.2; min-width:100px;" onclick="handleSave()">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .form-label {
+        font-weight:700; 
+        color:var(--primary0045AC);
+    }
+    .form-input{
+        color: #7B7B7B;
+        min-width: max-content;
+    }
+
+    .fieldsArea {
+        padding-bottom: 1rem;
+    }
+</style>

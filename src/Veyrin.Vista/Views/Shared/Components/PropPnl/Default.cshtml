@@ -1,0 +1,249 @@
+@using Microsoft.AspNetCore.Mvc.Localization
+@using Veyrin.Core.Html;
+@inject IHtmlLocalizer<Veyrin.WebHelper.Localize.Resource> sharedLocalizer;
+@{
+    string type = ViewData.GetValue<string>("Type", string.Empty);
+    bool needToggle = ViewData.GetValue<bool>("Toggle", false);
+    string header = ViewData.GetValue<string>("Header", string.Empty);
+    Dictionary<int, List<AbstractElements>> elements = ViewData.GetValue<Dictionary<int, List<AbstractElements>>>("Elements", new Dictionary<int, List<AbstractElements>>());
+    string toggle = $"{type}Toggle";
+    string pnlId = $"pnl{type}";
+    string tableBody = $"{type}TableBody";
+}
+
+
+<div id="@pnlId" class="card">
+    <div class="card-header">
+        @if (needToggle)
+        {
+            <div id="@toggle" class="col d-flex align-items-center gap-1" role="button"
+                 data-bs-toggle="collapse" data-bs-target="#@tableBody" aria-expanded="true"
+                 aria-controls="@tableBody">
+                <h4 class="auto-style11" style="margin: 0;">@header</h4>
+                <img class="headerArrow" src="~/assets/images/svg/caret-down-fill.svg" alt="Toggle Arrow" />
+            </div>
+        }
+        else
+        {
+            <div class="col d-flex align-items-center gap-1">
+                <h4 class="auto-style11" style="margin: 0;">@header</h4>
+            </div>
+        }
+    </div>
+
+    <div id="@tableBody" class="card-body collapse show">
+        <div class="col-md-12">
+            @foreach (var kvp in elements)
+            {
+                string childPnlId = $"{pnlId}_detail";
+                    @if (kvp.Key > 0)
+                    {
+                    childPnlId += $"_{kvp.Key}";
+                }
+                    
+                <div id="@childPnlId" class="row gx-2">
+                        
+
+                    @foreach (var item in kvp.Value)
+                    {
+                        if (item is SelectElement)
+                        {
+                            string ddlId = $"{item.Id}";
+                            string spanId = $"{ddlId}span";
+                            <div class="col-md-2 search-bar-col">
+                                <label for="@ddlId" class="auto-style5" style="min-width: 110px;">
+                                    @item.Label
+                                    @if (item.IsRequired)
+                                    {
+                                        <span style="color: #FF0000">*</span>
+                                    }
+                                </label>
+
+                                <select id="@ddlId"
+                                        name="@ddlId"
+                                        class="form-select fSelect"
+                                        style="text-transform: uppercase;"
+                                        @item.GetAttributes("readonly")>
+
+                                    @foreach (var option in ((SelectElement)item).Options ?? Enumerable.Empty<string>())
+                                    {
+                                        <option value="@option"
+                                                class="@(option == "All" ? $"{item.Name}checkall" : $"{item.Name}checkbox")">
+                                            @option
+                                        </option>
+                                    }
+
+                                </select>
+
+                                <span id="@spanId">@item.Description</span>
+                            </div>
+                        }
+                        else if (item is TextElement)
+                        {
+                            string txtNm2 = $"{item.Id}";
+                            <div class="col-md-2 search-bar-col">
+                                <label for="@txtNm2" class="auto-style5" style="min-width: 110px;">
+                                    @item.Label
+                                    @if (item.IsRequired)
+                                    {
+                                        <span style="color: #FF0000">*</span>
+                                    }
+                                </label>
+
+                                <input type="text"
+                                       id="@txtNm2"
+                                       name="@item.Name"
+                                       class="@item.GetAttributes("class")"
+                                       style="@item.GetAttributes("style")"
+                                       placeholder="@item.GetAttributes("placeholder")"
+                                       maxlength="@item.GetAttributes("maxlength")"
+                                       @item.GetAttributes("required")
+                                       @item.GetAttributes("readonly") />
+@*                                 <input type="text" 
+                                       id="@txtNm2" 
+                                       name="@txtNm2" 
+                                       class="form-control" 
+                                       style="text-transform: uppercase;"
+                                       @readonlyAttr /> *@
+
+                                <span>@item.Description</span>
+                            </div>
+                        }
+                        else if (item is TextAreaElement)
+                        {
+                            string txtNm2 = $"{item.Id}";
+                            <div class="col-md-2 search-bar-col">
+                                <label for="@txtNm2" class="auto-style5" style="min-width: 510px;">
+                                    @item.Label
+                                    @if (item.IsRequired)
+                                    {
+                                        <span style="color: #FF0000">*</span>
+                                    }
+                                </label>
+                                <textarea 
+                                          id="@txtNm2" 
+                                          name="@txtNm2"
+                                          class="@item.GetAttributes("class")"
+                                          style="@item.GetAttributes("style")"
+                                          @item.GetAttributes("readonly")
+                                >
+                                          @item.Description
+                                </textarea>
+
+                            </div>
+                        }
+                        else if (item is NumberElement)
+                        {
+                            var _item = (NumberElement)item;
+                            <div class="col-md-2 search-bar-col">
+                                <label class="form-label">
+                                    @item.Label
+                                    @if (_item.IsRequired)
+                                    {
+                                        <span style="color: #FF0000">*</span>
+                                    }
+                                </label>
+                                <input type="number"
+                                       id="@_item.Id"
+                                       name="@_item.Name"
+                                       class="@item.GetAttributes("class")"
+                                       value=""
+                                       @item.GetAttributes("required")
+                                       @item.GetAttributes("readonly") />
+
+@*                                        max="@_item.Max == null ? '': @_item.Max"
+                                       min="@_item.Min == null ? '': @_item.Min" *@
+                            </div>
+                        }
+                        else if (item is ButtonElement)
+                        {
+                            <div class="col-auto">
+                                <input type="button"
+                                       id="@item.Id"
+                                       style="@item.GetAttributes("style")"
+                                       class="@item.GetAttributes("class")"
+                                       onclick="@item.GetAttributes("onclick")"
+                                       value="@item.Label" />
+                            </div>
+                        }
+                        else if (item is DataTableElement)
+                        {
+                            var _item = (DataTableElement)item;
+                            <div class="col">
+                                <table id="@item.Id" class="stripe table table-bordered table-.0hover table-light w-100 text-center">
+                                    <thead class="table-warning">
+                                        <tr>
+                                            @foreach (var a in _item.ColumnHeaders)
+                                            {
+                                                <th scope="col">@a</th>
+                                            }
+                                        </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                        }
+                        else if(item is EditableRowTableElement)
+                        {
+                            var _item = (DataTableElement)item;
+                        }
+                        else if (item is HyperLinkElement)
+                        {
+                            var _item = (HyperLinkElement)item;
+                            <div class="col search-bar-col">
+                                <label for="@item.Id" class="auto-style5" style="min-width: 110px;">
+                                    @item.Label
+                                    @if (item.IsRequired)
+                                    {
+                                        <span style="color: #FF0000">*</span>
+                                    }
+                                </label>
+                                <a href="#" id="@item.Id" onclick="@_item.BindEvent"></a>
+                            </div>
+                        }
+                        else if (item is FileUpdElement)
+                        {
+                            var id0 = item.Id;
+                            var id1 = $"upf_{@item.Id}";
+                            var id2 = $"hl_{@item.Id}";
+                            var id3 = $"txt_{@item.Id}";
+                            <div class="col-md-2 search-bar-col">
+                                <label for="@id1" class="auto-style5" style="min-width: 110px;">
+                                    @item.Label
+                                    @if (item.IsRequired)
+                                    {
+                                        <span style="color: #FF0000">*</span>
+                                    }
+                                </label>
+                                <input type="file"
+                                    id="@id1"
+                                    name="@item.Name"
+                                    accept="@item.GetAttributes("accept")"
+                                    "@item.GetAttributes("multiple")"
+                                    style="@item.GetAttributes("style")"
+                                    onchange="doSelect('@id0', '@item.Description');" />
+
+
+                                <label type="button" for="@id1" class="masterData-btn-upload-label">
+                                    @if (@item.GetAttributes("hyperlnk")=="Y")
+                                    {
+                                    <a href="#" id="@id2" onclick="handleHyperClick('@id2');" class="masterData-btn-upload-textValue"></a>
+                                    }
+                                    else
+                                    {
+                                        <span id="@id3" class="masterData-btn-upload-textValue">@item.Description</span>
+                                    }
+                                    <span class="masterData-btn-upload">Browse</span>
+                                </label>
+
+
+                            </div>
+                        }
+                    }
+
+                </div>
+            }
+
+        </div>
+    </div>
+</div>
+

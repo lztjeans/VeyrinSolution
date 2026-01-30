@@ -1,0 +1,85 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@{
+    string modalId = ViewData["ModalId"]?.ToString() ?? string.Empty;
+    string viewHeader = ViewData["Header"]?.ToString() ?? string.Empty;
+    string viewMessage = ViewData["Message"]?.ToString() ?? string.Empty;
+    string btnLeftText = ViewData["BtnLeftText"]?.ToString() ?? string.Empty;
+    string btnRightText = ViewData["BtnRightText"]?.ToString() ?? string.Empty;
+    string btnLeftOnClick = ViewData["BtnLeftOnClick"]?.ToString() ?? string.Empty;
+    string btnRightOnClick = ViewData["BtnRightOnClick"]?.ToString() ?? string.Empty;
+
+}
+
+<style>
+    .modal-confirm-container {
+        position: fixed;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background-color: #0000006b;
+        z-index: 10
+    }
+
+    .main-content-container {
+        position: absolute;
+        top: 50%;
+        left: 0;
+        right: 0;
+        width: 80%;
+        max-width: 400px;
+        margin: 0 auto;
+        padding-bottom: 12px;
+        background-color: white;
+        border: 1px solid #000;
+        transform: translateY(-50%);
+    }
+
+    .modal-confirm-header {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 10px;
+        background-color: #D9D9D9;
+        border-bottom: 1px solid #000;
+    }
+
+    .modal-confirm-header-text {
+        font-weight: 600;
+        margin-bottom: 0;
+    }
+
+    .modal-confirm-btnArea {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 12px;
+    }
+
+    .modal-confirm-singleBtn {
+        line-height: 1.2;
+        min-width: 100px;
+    }
+
+    p {
+        white-space: pre-line;
+        line-height: 1.5;
+    }
+</style>
+
+<div hidden id="@modalId" class="modal-confirm-container">
+    <div class="main-content-container">
+        <div class="modal-confirm-header">
+            <h4 class="modal-confirm-header-text">@viewHeader</h4>
+        </div>
+        <div style="padding: 8px;">
+            <p>@viewMessage</p>
+            <div class="modal-confirm-btnArea">
+                <button type="button" class="btn btn-primary modal-confirm-singleBtn"
+                    onclick="@(btnLeftOnClick)">@btnLeftText</button>
+                <button @(string.IsNullOrEmpty(btnRightText) ? "hidden" : "") type="button"
+                    class="btn btn-primary modal-confirm-singleBtn" onclick="@(btnRightOnClick)">@btnRightText</button>
+            </div>
+        </div>
+    </div>
+</div>

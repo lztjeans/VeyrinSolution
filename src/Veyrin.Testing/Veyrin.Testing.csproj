@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Veyrin.Config\Veyrin.Config.csproj" />
+    <ProjectReference Include="..\Veyrin.Core\Veyrin.Core.csproj" />
+    <ProjectReference Include="..\Veyrin.Data\Veyrin.Data.csproj" />
+    <ProjectReference Include="..\Veyrin.Pulse\Veyrin.Pulse.csproj" />
+  </ItemGroup>
+
+</Project>

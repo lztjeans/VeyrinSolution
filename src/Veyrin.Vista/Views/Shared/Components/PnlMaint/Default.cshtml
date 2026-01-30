@@ -1,0 +1,206 @@
+@using Microsoft.AspNetCore.Mvc.Localization;
+@using newAPD.Infrastructure.Common
+@using newAPD.Infrastructure.DOModel
+@using newAPD.Infrastructure.Utils
+@using newAPD.Infrastructure.ViewModels
+
+@inject IHtmlLocalizer<newAPD.Infrastructure.Localize.Resource> sharedLocalizer;
+@{
+    BOmMaint type = ViewData.GetValue<BOmMaint>("Type", default);
+    string header = ViewData.GetValue<string>("Header", string.Empty);
+    string toggle = $"{type}Toggle";
+    string pnlId = $"pnl{type}";
+    string tableBody = $"{type}TableBody";
+    List<AbstractElements> elements = ViewData.GetValue<List<AbstractElements>>("Elements", new List<AbstractElements>());
+}
+
+
+
+<div id="@pnlId" class="card">
+    <div class="card-header">
+        <div id="@toggle" class="col d-flex align-items-center gap-1" role="button"
+                data-bs-toggle="collapse" data-bs-target="#@tableBody" aria-expanded="true"
+                aria-controls="@tableBody">
+            <h4 class="auto-style11" style="margin: 0;">@header</h4>
+            <img class="headerArrow" src="~/assets/images/svg/caret-down-fill.svg" alt="Toggle Arrow" />
+        </div>
+    </div>
+    <div id="@tableBody" class="card-body collapse show" >
+        <div class="col-md-12">
+
+            @switch (type)
+            {
+                case BOmMaint.WLCSPPT:
+                    {
+                        <div class="row" style="row-gap: 12px;">
+                            <div class="col-md-6">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <span>Plate</span>
+                                    <div>
+                                        <input id="btnAddWPlt" type="button" class="btn btn-primary btn-sm me-2" onclick="btnAddDel_Click('WLCSP_','Plate_');" value="+ Add" />
+                                        <input id="btnDelWPlt" type="button" class="btn btn-secondary btn-sm" onclick="btnAddDel_Click('WLCSP_','Plate_', false);" value="- Delete" />
+                                    </div>
+                                </div>
+                                <table id="WLCSP_Plate_Table"
+                                       class="stripe table table-bordered table-hover table-light w-100 text-center">
+                                    <thead class="table-warning">
+                                        <tr>
+                                            <th scope="col"></th>
+                                            <th scope="col">Material</th>
+                                            <th scope="col">Vendor</th>
+                                            <th scope="col">Type</th>
+                                        </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                        </div>
+                    }
+                    break;
+                case BOmMaint.WLCSPUBM:
+                    {
+                        var item = elements.First();
+                        string ddlId = $"{item.Id}";
+                        <div class="row" style="row-gap: 12px;">
+                            <div class="col-md-1 search-bar-col">
+                                <label for="@ddlId" class="auto-style5" style="min-width: 110px;">
+                                    @item.Label
+                                </label>
+                                <select id="@ddlId" name="@ddlId" class="form-select fSelect" style="text-transform: uppercase;">
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row" style="row-gap: 12px;">
+                            <div class="col-md-6">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <span>UBM Sputter</span>
+                                    <div>
+                                        <input id="btnAddUSpt" type="button" class="btn btn-primary btn-sm me-2" onclick="btnAddDel_Click('UBM_','Sputter_');" value="+ Add" />
+                                        <input id="btnDelUSpt" type="button" class="btn btn-secondary btn-sm" onclick="btnAddDel_Click('UBM_','Sputter_', false);" value="- Delete" />
+                                    </div>
+                                </div>
+                                <table id="UBM_Sputter_Table"
+                                       class="stripe table table-bordered table-hover table-light w-100 text-center">
+                                    <thead class="table-warning">
+                                        <tr>
+                                            <th scope="col"></th>
+                                            <th scope="col">Material</th>
+                                            <th scope="col">Vendor</th>
+                                            <th scope="col">Type</th>
+                                        </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <span>UBM Plate</span>
+                                    <div>
+                                        <input id="btnAddUPlt" type="button" class="btn btn-primary btn-sm me-2" onclick="btnAddDel_Click('UBM_','Plate_');" value="+ Add" />
+                                        <input id="btnDelUPlt" type="button" class="btn btn-secondary btn-sm" onclick="btnAddDel_Click('UBM_','Plate_', false);" value="- Delete" />
+                                    </div>
+                                </div>
+                                <table id="UBM_Plate_Table"
+                                       class="stripe table table-bordered table-hover table-light w-100 text-center">
+                                    <thead class="table-warning">
+                                        <tr>
+                                            <th scope="col"></th>
+                                            <th scope="col">Material</th>
+                                            <th scope="col">Vendor</th>
+                                            <th scope="col">Type</th>
+                                        </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                        </div>
+                    }
+                    break;
+                case BOmMaint.WLCSPRDL:
+                    {
+                        var item = elements.First(x => x is SelectElement);
+                        string ddlId = $"{item.Id}";
+                        <div class="row" style="row-gap: 12px;">
+                            <div class="col-md-1 search-bar-col">
+                                <label for="@ddlId" class="auto-style5" style="min-width: 110px;">
+                                    @item.Label
+                                </label>
+                                <select id="@ddlId" name="@ddlId" class="form-select fSelect" style="text-transform: uppercase;">
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row" style="row-gap: 12px;">
+                            <div class="col-md-6">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <span>RDL Sputter</span>
+                                    <div>
+                                        <input id="btnAddRSpt" type="button" class="btn btn-primary btn-sm me-2" onclick="btnAddDel_Click('RDL_','Sputter_');" value="+ Add" />
+                                        <input id="btnDelRSpt" type="button" class="btn btn-secondary btn-sm" onclick="btnAddDel_Click('RDL_','Sputter_',false);" value="- Delete" />
+                                    </div>
+                                </div>
+                                <table id="RDL_Sputter_Table"
+                                class="stripe table table-bordered table-hover table-light w-100 text-center">
+                                    <thead class="table-warning">
+                                        <tr>
+                                            <th scope="col"></th>
+                                            <th scope="col">Material</th>
+                                            <th scope="col">Vendor</th>
+                                            <th scope="col">Type</th>
+                                        </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <span>RDL Plate</span>
+                                    <div>
+                                        <input id="btnAddRPlt" type="button" class="btn btn-primary btn-sm me-2" onclick="btnAddDel_Click('RDL_','Plate_');" value="+ Add" />
+                                        <input id="btnDelRPlt" type="button" class="btn btn-secondary btn-sm" onclick="btnAddDel_Click('RDL_','Plate_',false);" value="- Delete" />
+                                    </div>
+                                </div>
+                                <table id="RDL_Plate_Table"
+                                       class="stripe table table-bordered table-hover table-light w-100 text-center">
+                                    <thead class="table-warning">
+                                        <tr>
+                                            <th scope="col"></th>
+                                            <th scope="col">Material</th>
+                                            <th scope="col">Vendor</th>
+                                            <th scope="col">Type</th>
+                                        </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                        </div>
+                    }
+                    break;
+                default:
+                    {
+                        <div class="row" style="row-gap: 12px;">
+                            @foreach (var item in elements)
+                            {
+                                if (item is SelectElement)
+                                {
+                                    string ddlId = $"{item.Id}";
+                                    <div class="col-md-2 search-bar-col">
+                                        <label for="@ddlId" class="auto-style5" style="min-width: 110px;">
+                                            @item.Label<span style="color: #FF0000">*</span>
+                                        </label>
+                                        <select id="@ddlId" name="@ddlId" class="form-select fSelect" style="text-transform: uppercase;">
+                                        </select>
+                                    </div>
+                                }
+                                else if (item is TextElement)
+                                {
+                                    string txtNm2 = $"{item.Id}";
+                                    <div class="col-md-2 search-bar-col">
+                                        <label for="@txtNm2" class="auto-style5" style="min-width: 110px;">
+                                            @item.Label<span style="color: #FF0000">*</span>
+                                        </label>
+                                        <input type="text" class="form-control" id="@txtNm2" name="@txtNm2" style="text-transform: uppercase;" />
+                                    </div>
+                                }
+                            }
+                        </div>
+                    }
+                    break;
+            }
+        </div>
+    </div>
+</div>

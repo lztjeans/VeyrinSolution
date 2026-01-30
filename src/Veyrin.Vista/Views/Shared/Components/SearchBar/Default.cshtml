@@ -1,0 +1,134 @@
+﻿@*
+    This is a search bar component that is used in the index page of the application.
+*@
+@using Microsoft.AspNetCore.Mvc.Localization
+@using Veyrin.Core.Html;
+@inject IHtmlLocalizer<Veyrin.WebHelper.Localize.Resource> sharedLocalizer;
+@{
+    List<AbstractElements> elements = ViewData.GetValue<List<AbstractElements>>("Elements", new List<AbstractElements>());
+    string viewTitle = ViewData.GetValue<string>("ViewTitle", string.Empty);
+}
+
+<div class="page-header justify-content-between">
+    <div class="col-md-12">
+        <div class="row">
+            <div class="col-md-10">
+                <h1 class="page-title auto-style11">@viewTitle</h1>
+            </div>
+            <div class="col-md-2">
+            </div>
+        </div>
+    </div>
+
+
+    <div class="card">
+        <div class="card-body" style="display:flex;">
+            <div class="col-md-12">
+                <form id="searchForm" method="post">
+                    <div class="row" style="row-gap: 12px;">
+                        @foreach (var item in elements)
+                        {
+                            @if (item is SelectElement)
+                            {
+                                @* var _item = (SelectElement)item; *@
+                                <div class="col-md-1 search-bar-col">
+                                    <label class="form-label">@item.Label</label>
+                                    <select class="form-select fSelect"
+                                            "@item.GetAttributes("multiple")"
+                                            name="@item.Name"
+                                            id="@item.Id"
+                                            value="">
+                                        @foreach (var option in ((SelectElement)item).Options ?? Enumerable.Empty<string>())
+                                        {
+                                            <option value="@option"
+                                                class="@(option == "All" ? $"{item.Name}checkall" : $"{item.Name}checkbox")">@option
+                                            </option>
+                                        }
+                                    </select>
+                                    @if (item.GetAttributes("IsMultiple").Equals("true"))
+                                    {
+                                        <text>
+                                        </text>
+                                    }
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="col-md-2 search-bar-col">
+                                    <label class="form-label">@item.Label</label>
+                                    @if ((item is NumberElement))
+                                    {
+                                        <input type="number" max="@((NumberElement)item).Max" min="@((NumberElement)item).Min"
+                                            class="form-control" name="@item.Name" id="@item.Id" value="" required />
+                                    }
+                                    else
+                                    {
+                                        <input type="text" class="form-control" name="@item.Name" id="@item.Id" value="" />
+                                    }
+                                </div>
+                            }
+                        }
+
+                        <div class="col search-bar-col">
+                            <button class="btn btn-primary btn-md btn-submit" id="btnSearch" type="button" onclick="doSearch();">
+                                <i class="bi bi-search" style="margin-right:6px;"></i>
+                                @sharedLocalizer["Search"]
+                            </button>
+                        </div>
+
+
+
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    
+
+    function getSelectedValues($select) {
+        return $select.val() || [];
+    }
+
+    function renderOptions(name, $select, options) {
+
+        if ($select.length == 0) return;
+
+        $select.empty();
+
+        $select.append($(`<option class=${name}checkall></option>`).val('All').text('All'));
+        options.forEach(val => {
+            $select.append($(`<option class=${name}checkbox></option>`).val(val).text(val));
+        });
+
+        // if (!$select.data('fSelect')) {
+        //     $select.fSelect();
+        // } else {
+            $select.data('fSelect')?.reload();
+        // }
+
+        $(`.${name}checkall`).off('click').on('click', function () {
+            $('.fs-option').each(function () {
+                if (!$(`.${name}checkall`).is(":checked")) {
+                    $(`.${name}checkbox`).addClass('selected');
+                } else {
+                    $(`.${name}checkbox`).removeClass('selected');
+                }
+            });
+        });
+
+        $(`.${name}checkbox`).off('click').on('click', function () {
+            if ($(this).hasClass('selected')) {
+                $(`.${name}checkall`).removeClass('selected');
+            }
+        });
+    }
+    
+    // $(document).ready(function () {
+    // });
+
+
+</script>

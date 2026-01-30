@@ -1,0 +1,23 @@
+﻿using Veyrin.Core.Interfaces;
+using Veyrin.Core.Models;
+
+namespace Veyrin.Core.Logging;
+
+/// <summary>
+/// 統一門戶：應用程式內部所有類別都呼叫這個靜態類別
+/// </summary>
+public static class LogHelper
+{
+    private static ILogProvider? _provider;
+
+    // 預設為空實作，避免未初始化時噴出 NullReferenceException
+    public static void SetProvider(ILogProvider provider) => _provider = provider;
+
+    public static void Info(string msg, params object[] args) => _provider?.Log(LogLevelEnum.Info, message: msg, null, args: args);
+    public static void Error(string msg, Exception? ex = null) => _provider?.Log(LogLevelEnum.Error, msg, ex);
+    public static void Trace(string msg, params object[] args) => _provider?.Log(LogLevelEnum.Trace, message: msg, args: args);
+    public static void Debug(string msg, params object[] args) => _provider?.Log(LogLevelEnum.Debug, message: msg, args: args);
+    public static void Warn(string msg, params object[] args) => _provider?.Log(LogLevelEnum.Warning, message: msg, args: args);
+    public static void Fatal(string msg, Exception? ex = null, params object[] args) => _provider?.Log(LogLevelEnum.Fatal, message: msg, ex: ex, args: args);
+
+}

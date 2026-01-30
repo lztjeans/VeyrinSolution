@@ -1,0 +1,42 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+
+    <!-- 必須加這個，讓 RCL 支援 MVC Razor (.cshtml) -->
+    <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Views\Shared\Components\ICPSDSFile\**" />
+    <Compile Remove="Views\Shared\Components\PnlMaint\**" />
+    <Content Remove="Views\Shared\Components\ICPSDSFile\**" />
+    <Content Remove="Views\Shared\Components\PnlMaint\**" />
+    <EmbeddedResource Remove="Views\Shared\Components\ICPSDSFile\**" />
+    <EmbeddedResource Remove="Views\Shared\Components\PnlMaint\**" />
+    <None Remove="Views\Shared\Components\ICPSDSFile\**" />
+    <None Remove="Views\Shared\Components\PnlMaint\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="ViewComponents\ICPSDSFileViewComponent.cs" />
+    <Compile Remove="ViewComponents\PnlMaintComponent.cs" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <!-- ASP.NET Core MVC / Razor 相關型別 (ViewComponent 等) 內建在 Microsoft.AspNetCore.App -->
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <ProjectReference Include="..\Veyrin.Core\Veyrin.Core.csproj" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <Folder Include="Localize\" />
+  </ItemGroup>
+  
+  
+</Project>

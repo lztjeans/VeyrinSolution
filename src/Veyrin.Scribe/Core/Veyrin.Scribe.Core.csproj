@@ -1,0 +1,32 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="backup\**" />
+    <Compile Remove="Contexts\**" />
+    <EmbeddedResource Remove="backup\**" />
+    <EmbeddedResource Remove="Contexts\**" />
+    <None Remove="backup\**" />
+    <None Remove="Contexts\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="DocumentHelper.cs" />
+    <Compile Remove="Interfaces\Excel\IExcelEngine.cs" />
+    <Compile Remove="Interfaces\IExcelEngine2.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.Data.Common" Version="4.3.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Veyrin.Core\Veyrin.Core.csproj" />
+  </ItemGroup>
+
+</Project>

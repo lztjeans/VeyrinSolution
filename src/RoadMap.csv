@@ -1,0 +1,12 @@
+﻿類別,模組名稱,核心使命,命名風格,目前狀態
+地基,Veyrin.Core,"提供 Guard, Logging, Reflection, Env 等生命線工具。",穩定、簡潔,已就緒
+血管,Veyrin.Pulse,處理 API 通訊流，具備 Retry 與優雅的請求封裝。,優雅、有生命力,已就緒
+肌肉,Veyrin.Data,序列化、資料結構與高性能資料轉換（BulkInsert）。,清晰、結構化,已就緒
+神經,Veyrin.Config,環境管理與設定載入、熱重載支援。,穩定、乾淨,已就緒
+雙手,Veyrin.Cli,命令解析、終端色彩、動畫與表格顯示。,實用、輕量,已就緒
+筆墨,Veyrin.Scribe,"Excel, PDF, Word 與文本文件的讀寫與自動化生成。",細緻、精確,規劃中
+視野,Veyrin.Vista,UI 展現層與文件流（Stream）的視覺化操作。,視覺、流暢,規劃中
+輔助,Veyrin.DevKit,開發者輔助工具、偵錯與擴充。,工程向、理性,規劃中
+守衛,Veyrin.Testing,單元測試與模擬工具（Mock Support）。,清晰、專業,規劃中
+無限,Veyrin.Astra,雲端 API、遠端整合與分散式支援。,優雅、科技感,規劃中
+增益,Veyrin.Extend,額外 Plugin 或實驗性模組。,靈活、創新,規劃中

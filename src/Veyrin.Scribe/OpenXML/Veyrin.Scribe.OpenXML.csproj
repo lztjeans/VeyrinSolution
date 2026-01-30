@@ -1,0 +1,29 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="backups\**" />
+    <EmbeddedResource Remove="backups\**" />
+    <None Remove="backups\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="OpenXmlEngine.cs" />
+    <Compile Remove="XlsEngine - 複製.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="DocumentFormat.OpenXml" Version="3.3.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Veyrin.Core\Veyrin.Core.csproj" />
+    <ProjectReference Include="..\Core\Veyrin.Scribe.Core.csproj" />
+  </ItemGroup>
+
+</Project>
